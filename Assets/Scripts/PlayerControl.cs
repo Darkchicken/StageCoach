@@ -5,7 +5,7 @@ public class PlayerControl : MonoBehaviour {
 
     public int health;
     //how far to move up and down to switch lanes
-    private float laneWidth = 5;
+    private float laneWidth = 8;
     private float shootForce = 5;
 
     GameObject playerBullet;
