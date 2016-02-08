@@ -18,8 +18,8 @@ public class LaneReset : MonoBehaviour {
 	}
     public void OnTriggerEnter(Collider col)
     {
-        Debug.Log("ow");
-        if(col.name == "Lane")
+        
+        if(col.tag == "Lane")
         {
             col.transform.position = laneSpawn.transform.position;
         }
