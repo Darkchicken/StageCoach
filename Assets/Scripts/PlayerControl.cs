@@ -7,6 +7,11 @@ public class PlayerControl : MonoBehaviour {
     //how far to move up and down to switch lanes
     private float laneWidth = 8;
     private float shootForce = 5;
+    //distance a touch must move to be considered a swipe
+    private float distanceForSwipe = 30;
+    //should store lane player is currently in, assign to starting lane value
+    //lanes are 1-5 going up
+    private float currentLane = 3;
 
     GameObject playerBullet;
 
@@ -20,33 +25,48 @@ public class PlayerControl : MonoBehaviour {
 	void Update ()
     {
         //check if there are touches
-        if (Input.touchCount > 0)
+        
+        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended)
         {
-            //if so, cycle through the touches
-            for (int i = 0; i < Input.touchCount; ++i)
+            // Get movement of the finger since last frame
+            Vector2 touchDeltaPosition = Input.GetTouch(0).deltaPosition;
+            //if player swipes up
+            if (touchDeltaPosition.y> distanceForSwipe)
             {
-                Touch touch;
-                touch = Input.GetTouch(i);
-                if (touch.phase == TouchPhase.Began)
+                if(currentLane < 5)
                 {
-                    GameObject bullet;
-                    bullet = (GameObject)Instantiate(playerBullet, transform.position, transform.rotation);
-
-                    // Add force to the cloned object in the object's forward direction
-                    bullet.GetComponent<Rigidbody>().AddForce(touch.position * shootForce);
-                }
-                if (touch.phase == TouchPhase.Moved)
-                {
-
-                }
-                else if (touch.phase == TouchPhase.Ended)
-                {
-
+                    //boolean is true for up, false for down
+                    SwitchLanes(true);
+                    currentLane++;
                 }
             }
+            //if player swipes down
+            if (touchDeltaPosition.y < distanceForSwipe)
+            {
+                if (currentLane > 1)
+                {
+                    //boolean is true for up, false for down
+                    SwitchLanes(false);
+                    currentLane--;
+                }
+            }
+
+
         }
     }
 
+    public void SwitchLanes(bool up)
+    {
+        //move player up
+        if(up == true)
+        {
+            transform.position = new Vector3(transform.position.x, transform.position.y + laneWidth, transform.position.z);
+        }
+        else//move player down
+        {
+            transform.position = new Vector3(transform.position.x, transform.position.y - laneWidth, transform.position.z);
+        }
+    }
     public void OnCollisionEnter(Collision col)
     {
         
